@@ -1,0 +1,77 @@
+<header class="site-header" th:fragment="header">
+  <style>
+    .site-header .nav-link {
+      font-size: 0.9rem;
+      white-space: nowrap !important;
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+    }
+    .site-header .navbar-brand {
+      font-size: 1.3rem !important;
+      letter-spacing: -0.5px;
+    }
+    .site-header .input-group {
+      width: 160px !important;
+    }
+    .site-header .btn-outline-primary {
+      font-size: 0.85rem;
+      padding: 6px 12px !important;
+      white-space: nowrap !important;
+    }
+    .site-header .user-info {
+      font-size: 0.85rem;
+      white-space: nowrap !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .site-header .user-info span {
+      white-space: nowrap !important;
+    }
+    .site-header .user-info a {
+      font-size: 0.8rem;
+    }
+    .site-header .user-info .btn-manage {
+      padding: 2px 8px !important;
+      font-size: 0.8rem;
+      white-space: nowrap !important;
+    }
+  </style>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" href="/">TECH-PC</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-3">
+          <li class="nav-item"><a class="nav-link fw-medium" href="/">Sản phẩm</a></li>
+          <li class="nav-item"><a class="nav-link fw-medium" href="/linh-kien">Linh kiện</a></li>
+          <li class="nav-item"><a class="nav-link fw-medium" href="/may-bo">Máy bộ</a></li>
+          <li class="nav-item"><a class="nav-link fw-medium" href="/phu-kien">Phụ kiện</a></li>
+          <li class="nav-item"><a class="nav-link fw-medium" href="/ho-tro">Hỗ trợ</a></li>
+          <li class="nav-item"><a class="nav-link fw-medium" href="/ai-consultant">Tư vấn AI</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-3">
+          <form action="/search" method="GET" class="input-group input-group-sm">
+            <input type="text" name="query" class="form-control" placeholder="Tìm kiếm..." th:value="${searchQuery}" required />
+            <button type="submit" class="btn btn-outline-secondary"><i>🔍</i></button>
+          </form>
+          <a href="/cart" class="btn btn-outline-primary position-relative rounded-pill">
+              <i>🛒</i> Giỏ hàng
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" th:text="${cartItemsCount}">0</span>
+          </a>
+          <div th:if="${currentUser != null}" class="user-info">
+            <i>👤</i>
+            <span>Chào, <strong th:text="${currentUser.name}">User</strong></span>
+            <a th:if="${currentUser.role == 'ADMIN'}" class="btn btn-outline-danger btn-manage" href="/admin/orders">Quản lý</a>
+            <a class="nav-link text-danger p-0 ms-1 d-inline-block" href="/logout">Đăng xuất</a>
+          </div>
+          <div th:unless="${currentUser != null}">
+            <a class="nav-link" href="/login"><i>👤</i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>

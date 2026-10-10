@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECH-PC Admin | Kiểm Duyệt Đánh Giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #111827;
+            min-height: 100vh;
+            color: #9ca3af;
+        }
+        .sidebar .nav-link {
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: #1f2937;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: #ffffff;
+        }
+        .table {
+            vertical-align: middle;
+        }
+        .table thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            border-bottom: 2px solid #f3f4f6;
+            padding: 15px 20px;
+        }
+        .table tbody td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .product-thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .btn-action {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        .search-bar {
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+        .star-rating {
+            font-size: 1.15rem;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Fragment -->
+            <div th:replace="~{fragments/admin-sidebar :: adminSidebar('reviews')}"></div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold text-dark">Kiểm Duyệt Đánh Giá</h2>
+                        <p class="text-muted mb-0">Quản lý phản hồi và đánh giá từ khách hàng để đảm bảo nội dung tích cực</p>
+                    </div>
+                </div>
+
+                <div class="card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Danh sách Đánh Giá</h5>
+                        <div class="d-flex gap-2">
+                            <input type="text" id="reviewSearch" class="form-control search-bar px-3 py-2" placeholder="Tìm theo tên hoặc nội dung..." style="width: 300px;">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table" id="reviewsTable">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Người đánh giá</th>
+                                    <th>Đánh giá</th>
+                                    <th>Nội dung</th>
+                                    <th>Ngày đăng</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="review : ${reviews}">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img th:src="${review.product.imageUrl}" class="product-thumb" alt="Product Image">
+                                            <div>
+                                                <a th:href="@{/product/{id}(id=${review.product.id})}" target="_blank" class="fw-semibold text-dark text-decoration-none" th:text="${review.product.name}">Tên sản phẩm</a>
+                                                <div class="text-muted small" th:text="${review.product.brand}">ASUS</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="fw-semibold text-dark" th:text="${review.author}">Nguyễn Văn A</td>
+                                    <td>
+                                        <div class="star-rating text-warning">
+                                            <span th:each="i : ${#numbers.sequence(1, 5)}" th:text="${i <= review.rating} ? '★' : '☆'"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-dark" style="max-width: 350px; font-size: 0.95rem; white-space: normal; word-break: break-word;" th:text="${review.content}">Nội dung đánh giá tốt</div>
+                                    </td>
+                                    <td class="text-muted small" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy HH:mm')}">20/06/2026 12:00</td>
+                                    <td>
+                                        <form th:action="@{/admin/reviews/{id}/delete(id=${review.id})}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này không? Thao tác này không thể hoàn tác.')">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm btn-action">Xóa</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('reviewSearch').addEventListener('input', function() {
+            let filter = this.value.toUpperCase();
+            let rows = document.querySelector("#reviewsTable tbody").rows;
+            for (let i = 0; i < rows.length; i++) {
+                let authorCol = rows[i].cells[1].innerText;
+                let contentCol = rows[i].cells[3].innerText;
+                if (authorCol.toUpperCase().indexOf(filter) > -1 || contentCol.toUpperCase().indexOf(filter) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
+</html>

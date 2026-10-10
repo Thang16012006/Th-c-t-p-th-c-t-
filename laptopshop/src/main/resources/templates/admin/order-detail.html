@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECH-PC Admin | Chi tiết Đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #111827;
+            min-height: 100vh;
+            color: #9ca3af;
+        }
+        .sidebar .nav-link {
+            color: #9ca3af;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: #1f2937;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: #ffffff;
+            margin-bottom: 30px;
+        }
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .badge-pending { background-color: #fef3c7; color: #d97706; }
+        .badge-confirmed { background-color: #e0e7ff; color: #4f46e5; }
+        .badge-shipped { background-color: #e0f2fe; color: #0284c7; }
+        .badge-delivered { background-color: #dcfce7; color: #15803d; }
+        .badge-cancelled { background-color: #fee2e2; color: #b91c1c; }
+        
+        .btn-action {
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        .product-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div th:replace="~{fragments/admin-sidebar :: adminSidebar('orders')}"></div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <div class="mb-4">
+                    <a href="/admin/orders" class="btn btn-outline-secondary btn-sm btn-action mb-2">← Trở lại danh sách</a>
+                    <h2 class="fw-bold text-dark" th:text="'Chi tiết Đơn hàng #' + ${order.id}">Chi tiết Đơn hàng #1</h2>
+                </div>
+
+                <div class="row">
+                    <!-- Left Column: Order Items -->
+                    <div class="col-lg-8">
+                        <div class="card p-4">
+                            <h5 class="fw-bold mb-4">Sản phẩm đã đặt</h5>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr class="text-secondary small uppercase">
+                                            <th>Sản phẩm</th>
+                                            <th class="text-end">Đơn giá</th>
+                                            <th class="text-center">Số lượng</th>
+                                            <th class="text-end">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${order.items}">
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <img th:src="${item.product.imageUrl}" class="product-img" alt="">
+                                                    <div>
+                                                        <div class="fw-semibold text-dark" th:text="${item.product.name}">Tên sản phẩm</div>
+                                                        <div class="text-muted small" th:text="${item.product.description}">Mô tả</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-end" th:text="${T(java.lang.String).format('%,.0f', item.price)} + ' đ'">10.000 đ</td>
+                                            <td class="text-center" th:text="${item.quantity}">1</td>
+                                            <td class="text-end fw-bold text-dark" th:text="${T(java.lang.String).format('%,.0f', item.price * item.quantity)} + ' đ'">10.000 đ</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="d-flex justify-content-end">
+                                <div style="width: 300px;">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Tạm tính:</span>
+                                        <span class="fw-semibold" th:text="${T(java.lang.String).format('%,.0f', order.totalAmount)} + ' VNĐ'">10.000 VNĐ</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Phí giao hàng:</span>
+                                        <span class="fw-semibold text-success">Miễn phí</span>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold fs-5 text-dark">Tổng cộng:</span>
+                                        <span class="fw-bold fs-5 text-primary" th:text="${T(java.lang.String).format('%,.0f', order.totalAmount)} + ' VNĐ'">10.000 VNĐ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Status & Customer Info -->
+                    <div class="col-lg-4">
+                        <!-- Update Status Card -->
+                        <div class="card p-4">
+                            <h5 class="fw-bold mb-3">Cập nhật đơn hàng</h5>
+                            
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-2">Trạng thái hiện tại</label>
+                                <span th:if="${order.status == 'PENDING'}" class="badge-status badge-pending">Chờ xử lý</span>
+                                <span th:if="${order.status == 'CONFIRMED'}" class="badge-status badge-confirmed">Đã xác nhận</span>
+                                <span th:if="${order.status == 'SHIPPED'}" class="badge-status badge-shipped">Đang giao</span>
+                                <span th:if="${order.status == 'DELIVERED'}" class="badge-status badge-delivered">Đã giao</span>
+                                <span th:if="${order.status == 'CANCELLED'}" class="badge-status badge-cancelled">Đã hủy</span>
+                            </div>
+
+                            <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="POST" class="mb-3">
+                                <div class="mb-3">
+                                    <label for="statusSelect" class="form-label text-muted small">Thay đổi trạng thái</label>
+                                    <select class="form-select" id="statusSelect" name="status">
+                                        <option value="PENDING" th:selected="${order.status == 'PENDING'}">Chờ xử lý</option>
+                                        <option value="CONFIRMED" th:selected="${order.status == 'CONFIRMED'}">Đã xác nhận</option>
+                                        <option value="SHIPPED" th:selected="${order.status == 'SHIPPED'}">Đang giao</option>
+                                        <option value="DELIVERED" th:selected="${order.status == 'DELIVERED'}">Đã giao</option>
+                                        <option value="CANCELLED" th:selected="${order.status == 'CANCELLED'}">Hủy đơn hàng</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 btn-action">Lưu trạng thái</button>
+                            </form>
+                            
+                            <form th:action="@{/admin/orders/{id}/delete(id=${order.id})}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Thao tác này không thể hoàn tác.')">
+                                <button type="submit" class="btn btn-outline-danger w-100 btn-action">Xóa đơn hàng</button>
+                            </form>
+                        </div>
+
+                        <!-- Customer Info Card -->
+                        <div class="card p-4">
+                            <h5 class="fw-bold mb-4">Thông tin giao hàng</h5>
+                            
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-1">Khách hàng</label>
+                                <span class="fw-semibold text-dark" th:text="${order.customerName}">Nguyễn Văn A</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-1">Email</label>
+                                <span class="fw-semibold text-dark" th:text="${order.customerEmail}">a@example.com</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-1">Số điện thoại</label>
+                                <span class="fw-semibold text-dark" th:text="${order.customerPhone}">0901234567</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-1">Địa chỉ giao hàng</label>
+                                <span class="fw-semibold text-dark" th:text="${order.shippingAddress}">123 Lê Lợi, Quận 1, TP. HCM</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small d-block mb-1">Ngày đặt hàng</label>
+                                <span class="fw-semibold text-dark" th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm:ss')}">20/06/2026 12:00:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

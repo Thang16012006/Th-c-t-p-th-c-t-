@@ -1,0 +1,303 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TECH-PC | Máy bộ PC lắp sẵn</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'Outfit', "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: #eef1f7;
+      }
+      .site-header {
+        background: white;
+        box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+      }
+      .chip {
+        border: 0;
+        border-radius: 999px;
+        padding: 6px 12px;
+        background: #dfe6f3;
+        color: #1d2a44;
+        font-size: 12px;
+      }
+      .chip.active {
+        background: #1f5fe0;
+        color: white;
+      }
+      .side-box {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .side-link {
+        display: flex;
+        justify-content: space-between;
+        text-decoration: none;
+        color: #334155;
+        padding: 8px 0;
+        font-size: 14px;
+        transition: all 0.2s ease;
+      }
+      .side-link:hover {
+        color: #1f5fe0;
+      }
+      .side-link.active-link {
+        color: #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .side-link.active-link .tag-count {
+        background: #1f5fe0;
+        color: white;
+      }
+      .tag-count {
+        background: #e4ebff;
+        color: #1f5fe0;
+        border-radius: 999px;
+        padding: 0 8px;
+        font-size: 11px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-card {
+        border: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(13, 110, 253, 0.12);
+      }
+      .product-img-wrapper {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        padding: 12px;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover .product-img {
+        transform: scale(1.08);
+      }
+      .price {
+        color: #0d6efd;
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .original-price {
+        text-decoration: line-through;
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-right: 6px;
+      }
+      .discount-badge {
+        background-color: #ef4444;
+        color: white;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+      }
+      .hot-badge {
+        background-color: #f97316;
+        color: white;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+      }
+      .rating-stars {
+        color: #f59e0b;
+        font-size: 0.8rem;
+      }
+      .mini-tag {
+        background: #e9eef8;
+        color: #64748b;
+        font-size: 10px;
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .footer-section {
+        background: #e7eaf1;
+      }
+    </style>
+  </head>
+  <body>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <header class="container mb-4">
+      <div class="bg-dark text-white rounded-4 overflow-hidden position-relative shadow-sm" style="height: 180px;">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, rgba(29,78,216,0.85) 0%, rgba(13,148,136,0.3) 100%); z-index: 1;"></div>
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=1200&auto=format&fit=crop'); background-size: cover; background-position: center; z-index: 0; filter: brightness(0.65);"></div>
+        <div class="position-relative p-4 p-md-5 d-flex flex-column justify-content-center h-100" style="z-index: 2;">
+          <h2 class="fw-bold mb-2">MÁY BỘ PC LẮP SẴN</h2>
+          <p class="text-light opacity-90 m-0 max-width-md">Cấu hình tối ưu từ chuyên gia, linh kiện tuyển chọn 100% chính hãng, bảo hành trọn bộ 36 tháng.</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="container pb-5">
+      <div class="small text-muted mb-3">Trang chủ &nbsp;›&nbsp; <strong class="text-dark">Máy bộ</strong></div>
+      <div class="row g-4">
+        <aside class="col-lg-3">
+          <div class="side-box mb-3">
+            <h6 class="fw-bold mb-3">Phân loại PC</h6>
+            <a class="side-link" th:classappend="${param.category == null} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('')">
+              <span>Tất cả PC lắp sẵn</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'PC_GAMING')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('PC_GAMING')">
+              <span>PC Gaming chuyên nghiệp</span>
+              <span class="tag-count" th:text="${gamingCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'PC_WORKSTATION')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('PC_WORKSTATION')">
+              <span>PC Workstation / Đồ họa</span>
+              <span class="tag-count" th:text="${workstationCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'PC_OFFICE')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('PC_OFFICE')">
+              <span>PC Văn phòng / Học tập</span>
+              <span class="tag-count" th:text="${officeCount}">0</span>
+            </a>
+          </div>
+          <div class="side-box">
+            <h6 class="fw-bold mb-3">Hãng lắp ráp / Linh kiện chính</h6>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="ASUS" id="brandASUS"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'ASUS')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandASUS">ASUS ROG/ProArt</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="MSI" id="brandMSI"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'MSI')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandMSI">MSI Gaming</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="Dell" id="brandDell"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'Dell')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandDell">Dell Tower PC</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="TECH-PC" id="brandTECH"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'TECH-PC')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandTECH">TECH-PC Custom Build</label>
+            </div>
+          </div>
+        </aside>
+
+        <section class="col-lg-9">
+          <div class="d-flex flex-wrap justify-content-between align-items-center side-box mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">Sắp xếp:</span>
+              <button class="chip active">Bán chạy nhất</button>
+              <button class="chip">Giá thấp - cao</button>
+              <button class="chip">Hiệu năng khủng</button>
+            </div>
+            <div class="small text-muted">Hiển thị 1 - <span th:text="${#lists.size(products)}">0</span> sản phẩm</div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6 col-xl-4" th:each="p : ${products}">
+              <div class="card product-card h-100">
+                <a th:href="@{/product/{id}(id=${p.id})}" class="text-decoration-none">
+                  <div class="product-img-wrapper">
+                    <img th:src="${p.imageUrl}" class="product-img" alt="" />
+                    <span th:if="${p.isHot}" class="hot-badge">HOT BUILD</span>
+                    <span class="discount-badge">-12%</span>
+                  </div>
+                </a>
+                <div class="card-body d-flex flex-column">
+                  <div class="small text-primary fw-semibold mb-1" 
+                       th:text="${p.category == 'PC_GAMING' ? 'PC GAMING' : (p.category == 'PC_WORKSTATION' ? 'WORKSTATION' : (p.category == 'PC_OFFICE' ? 'PC VĂN PHÒNG' : p.category))}">
+                    MÁY BỘ PC
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1">
+                    <a th:href="@{/product/{id}(id=${p.id})}" class="text-decoration-none text-dark" th:text="${p.name}">Tên cấu hình máy bộ</a>
+                  </h6>
+                  <p class="text-muted small mb-2" th:text="${p.description}">Chi tiết RAM, CPU, VGA...</p>
+                  <div class="rating-stars mb-3">★★★★★ <span class="text-muted small ms-1">(18)</span></div>
+                  <div class="d-flex gap-1 mb-3">
+                    <span class="mini-tag">🛡️ Bảo hành 36T</span>
+                    <span class="mini-tag">🚚 Giao lắp 2h</span>
+                  </div>
+                  <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="original-price" th:text="${T(java.lang.String).format('%,.0f', p.price * 1.12)} + 'đ'">0đ</span>
+                      <div class="price fw-bold" th:text="${T(java.lang.String).format('%,.0f', p.price)} + 'đ'">0đ</div>
+                    </div>
+                    <form th:action="@{/cart/add}" method="POST" class="m-0">
+                      <input type="hidden" name="productId" th:value="${p.id}" />
+                      <button type="submit" class="btn btn-primary btn-sm px-3 rounded-pill">🛒 Thêm</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 text-center py-5" th:if="${#lists.isEmpty(products)}">
+              <div class="text-muted fs-5">Hiện không có cấu hình máy bộ nào khớp với bộ lọc đã chọn.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer-section py-4 mt-5">
+      <div class="container text-center text-muted small">© 2026 TECH-PC. Professional Computing Solutions.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function applyFilters(categoryVal) {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          
+          if (categoryVal !== undefined) {
+              if (categoryVal === '') {
+                  params.delete('category');
+              } else {
+                  params.set('category', categoryVal);
+              }
+          }
+          
+          params.delete('brand');
+          document.querySelectorAll('.brand-checkbox:checked').forEach(cb => {
+              params.append('brand', cb.value);
+          });
+          
+          window.location.href = url.pathname + '?' + params.toString();
+      }
+    </script>
+  
+<div th:replace="~{fragments/widget :: widget}"></div>
+
+</body>
+</html>

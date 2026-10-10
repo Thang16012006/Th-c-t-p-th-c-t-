@@ -1,0 +1,289 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TECH-PC | Linh kiện</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial;
+        background: #eef1f7;
+      }
+      .site-header {
+        background: white;
+        box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+      }
+      .chip {
+        border: 0;
+        border-radius: 999px;
+        padding: 6px 12px;
+        background: #dfe6f3;
+        color: #1d2a44;
+        font-size: 12px;
+      }
+      .chip.active {
+        background: #1f5fe0;
+        color: white;
+      }
+      .side-box {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .side-link {
+        display: flex;
+        justify-content: space-between;
+        text-decoration: none;
+        color: #334155;
+        padding: 6px 0;
+        font-size: 14px;
+      }
+      .side-link:hover {
+        color: #1f5fe0;
+      }
+      .side-link.active-link {
+        color: #1d4ed8 !important;
+        font-weight: 600;
+      }
+      .side-link.active-link .tag-count {
+        background: #1f5fe0;
+        color: white;
+      }
+      .tag-count {
+        background: #e4ebff;
+        color: #1f5fe0;
+        border-radius: 999px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+      .product-card {
+        border: 0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(13, 110, 253, 0.12);
+      }
+      .product-img-wrapper {
+        height: 180px;
+        overflow: hidden;
+        position: relative;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        padding: 10px;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .product-card:hover .product-img {
+        transform: scale(1.08);
+      }
+      .price {
+        color: #0d6efd;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .original-price {
+        text-decoration: line-through;
+        color: #9ca3af;
+        font-size: 0.85rem;
+        margin-right: 6px;
+      }
+      .discount-badge {
+        background-color: #ef4444;
+        color: white;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+      }
+      .hot-badge {
+        background-color: #f97316;
+        color: white;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 8px;
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25);
+      }
+      .rating-stars {
+        color: #f59e0b;
+        font-size: 0.8rem;
+      }
+      .mini-tag {
+        background: #e9eef8;
+        color: #64748b;
+        font-size: 10px;
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .footer-section {
+        background: #e7eaf1;
+      }
+    </style>
+  </head>
+  <body>
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <main class="container pb-5">
+      <div class="small text-muted mb-3">Trang chủ &nbsp;›&nbsp; <strong class="text-dark">Linh kiện</strong></div>
+      <div class="row g-4">
+        <aside class="col-lg-3">
+          <div class="side-box mb-3">
+            <h6 class="fw-bold mb-3">Danh mục</h6>
+            <a class="side-link" th:classappend="${param.category == null} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('')">
+              <span>Tất cả linh kiện & Laptop</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'CPU')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('CPU')">
+              <span>CPU - Bộ vi xử lý</span>
+              <span class="tag-count" th:text="${cpuCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'GPU')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('GPU')">
+              <span>GPU - Card đồ họa</span>
+              <span class="tag-count" th:text="${gpuCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'RAM')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('RAM')">
+              <span>RAM - Bộ nhớ trong</span>
+              <span class="tag-count" th:text="${ramCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'MAINBOARD')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('MAINBOARD')">
+              <span>Bo mạch chủ</span>
+              <span class="tag-count" th:text="${mainboardCount}">0</span>
+            </a>
+            <a class="side-link" th:classappend="${param.category != null && #lists.contains(param.category, 'POWER_SUPPLY')} ? 'active-link text-primary fw-semibold' : ''" href="javascript:void(0)" onclick="applyFilters('POWER_SUPPLY')">
+              <span>Nguồn máy tính</span>
+              <span class="tag-count" th:text="${powerCount}">0</span>
+            </a>
+          </div>
+          <div class="side-box">
+            <h6 class="fw-bold mb-3">Thương hiệu</h6>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="Intel" id="brandIntel"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'Intel')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandIntel">Intel</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="AMD" id="brandAMD"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'AMD')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandAMD">AMD</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="ASUS" id="brandASUS"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'ASUS')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandASUS">ASUS</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input brand-checkbox" type="checkbox" value="MSI" id="brandMSI"
+                     th:checked="${param.brand != null && #lists.contains(param.brand, 'MSI')}"
+                     onclick="applyFilters()">
+              <label class="form-check-label" for="brandMSI">MSI</label>
+            </div>
+          </div>
+        </aside>
+
+        <section class="col-lg-9">
+          <div class="d-flex flex-wrap justify-content-between align-items-center side-box mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">Sắp xếp:</span>
+              <button class="chip active">Mới nhất</button>
+              <button class="chip">Giá thấp - cao</button>
+              <button class="chip">Giá cao - thấp</button>
+            </div>
+            <div class="small text-muted">Hiển thị 1 - <span th:text="${#lists.size(products)}">12</span> sản phẩm</div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6 col-xl-4" th:each="p : ${products}">
+              <div class="card product-card h-100">
+                <a th:href="@{/product/{id}(id=${p.id})}" class="text-decoration-none">
+                  <div class="product-img-wrapper">
+                    <img th:src="${p.imageUrl}" class="product-img" alt="" />
+                    <span th:if="${p.isHot}" class="hot-badge">HOT</span>
+                    <span class="discount-badge">-10%</span>
+                  </div>
+                </a>
+                <div class="card-body d-flex flex-column">
+                  <div class="small text-primary fw-semibold mb-1" th:text="${p.category}">LINH KIỆN</div>
+                  <h6 class="fw-bold text-dark mb-1">
+                    <a th:href="@{/product/{id}(id=${p.id})}" class="text-decoration-none text-dark" th:text="${p.name}">Tên sản phẩm</a>
+                  </h6>
+                  <p class="text-muted small mb-2" th:text="${p.description}">Mô tả ngắn</p>
+                  <div class="rating-stars mb-3">★★★★☆ <span class="text-muted small ms-1">(12)</span></div>
+                  <div class="d-flex gap-1 mb-3">
+                    <span class="mini-tag">🛡️ Bảo hành 24T</span>
+                    <span class="mini-tag">⚡ Giao 2h</span>
+                  </div>
+                  <div class="mt-auto d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="original-price" th:text="${T(java.lang.String).format('%,.0f', p.price * 1.12)} + 'đ'">0đ</span>
+                      <div class="price fw-bold" th:text="${T(java.lang.String).format('%,.0f', p.price)} + 'đ'">0đ</div>
+                    </div>
+                    <form th:action="@{/cart/add}" method="POST" class="m-0">
+                      <input type="hidden" name="productId" th:value="${p.id}" />
+                      <button type="submit" class="btn btn-primary btn-sm px-3 rounded-pill">🛒 Thêm</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer-section py-4">
+      <div class="container text-center text-muted small">© 2026 TECH-PC. Professional Computing Solutions.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function applyFilters(categoryVal) {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          
+          if (categoryVal !== undefined) {
+              if (categoryVal === '') {
+                  params.delete('category');
+              } else {
+                  params.set('category', categoryVal);
+              }
+          }
+          
+          params.delete('brand');
+          document.querySelectorAll('.brand-checkbox:checked').forEach(cb => {
+              params.append('brand', cb.value);
+          });
+          
+          window.location.href = url.pathname + '?' + params.toString();
+      }
+    </script>
+  
+<div th:replace="~{fragments/widget :: widget}"></div>
+
+</body>
+</html>

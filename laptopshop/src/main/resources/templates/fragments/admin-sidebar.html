@@ -1,0 +1,42 @@
+<div th:fragment="adminSidebar(activePage)" class="col-md-3 col-lg-2 sidebar p-4 d-flex flex-column">
+    <a href="/" class="d-flex align-items-center mb-4 text-white text-decoration-none">
+        <span class="fs-4 fw-bold">TECH-PC Admin</span>
+    </a>
+    <hr class="text-secondary">
+    <ul class="nav flex-column mb-auto">
+        <li class="nav-item">
+            <a href="/admin" class="nav-link p-3" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+                <i>📊</i> <span class="ms-2">Tổng quan</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/orders" class="nav-link p-3" th:classappend="${activePage == 'orders'} ? 'active' : ''">
+                <i>📦</i> <span class="ms-2">Quản lý đơn hàng</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/products" class="nav-link p-3" th:classappend="${activePage == 'products'} ? 'active' : ''">
+                <i>💻</i> <span class="ms-2">Quản lý sản phẩm</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/admin/reviews" class="nav-link p-3" th:classappend="${activePage == 'reviews'} ? 'active' : ''">
+                <i>⭐</i> <span class="ms-2">Quản lý đánh giá</span>
+            </a>
+        </li>
+        <li class="nav-item mt-3">
+            <a href="/" class="nav-link p-3 text-light-emphasis">
+                <i>🌐</i> <span class="ms-2">Xem website</span>
+            </a>
+        </li>
+    </ul>
+    <hr class="text-secondary">
+    <div class="dropdown">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <strong>Admin</strong>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-menu-item dropdown-item" href="/logout">Đăng xuất</a></li>
+        </ul>
+    </div>
+</div>

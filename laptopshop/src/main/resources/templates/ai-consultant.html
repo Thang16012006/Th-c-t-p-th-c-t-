@@ -1,0 +1,394 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TECH-PC | Trợ lý ảo tư vấn AI</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: 'Outfit', "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: #f1f5f9;
+        color: #1e293b;
+      }
+      .site-header {
+        background: white;
+        box-shadow: 0 2px 8px rgba(16, 24, 40, 0.04);
+      }
+      
+      /* Chat Container Styling */
+      .chat-window {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 600px;
+      }
+      .chat-header {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #10b981;
+        display: inline-block;
+        margin-right: 8px;
+        box-shadow: 0 0 10px #10b981;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(0.9); opacity: 0.8; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(0.9); opacity: 0.8; }
+      }
+      
+      .chat-history {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      /* Messages bubbles */
+      .message {
+        max-width: 75%;
+        border-radius: 16px;
+        padding: 14px 18px;
+        line-height: 1.5;
+        font-size: 15px;
+      }
+      .message-user {
+        align-self: flex-end;
+        background: #2563eb;
+        color: white;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+      }
+      .message-ai {
+        align-self: flex-start;
+        background: white;
+        color: #1e293b;
+        border-bottom-left-radius: 4px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.01);
+      }
+      
+      /* Typing Indicator Animation */
+      .typing-indicator {
+        display: flex;
+        gap: 5px;
+        padding: 10px 15px;
+        align-items: center;
+      }
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #94a3b8;
+        animation: bounce 1.4s infinite ease-in-out both;
+      }
+      .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+      .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+      @keyframes bounce {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1); }
+      }
+      
+      /* Product Card inside Chat bubble */
+      .chat-rec-wrapper {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+        min-width: 280px;
+      }
+      .chat-product-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s ease;
+      }
+      .chat-product-card:hover {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        transform: translateY(-2px);
+      }
+      .chat-product-img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        background: white;
+        padding: 3px;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+      }
+      
+      .chat-input-area {
+        background: white;
+        padding: 16px 24px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .chat-text-input {
+        border-radius: 12px;
+        padding: 12px 18px;
+        border: 1.5px solid #cbd5e1;
+        outline: none;
+        flex: 1;
+        font-size: 15px;
+        transition: all 0.2s ease;
+      }
+      .chat-text-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+      .chat-send-btn {
+        background: #2563eb;
+        color: white;
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .chat-send-btn:hover {
+        background: #1d4ed8;
+      }
+      
+      /* Quick Suggestion Chips */
+      .sug-chip {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1px solid #bfdbfe;
+        border-radius: 99px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .sug-chip:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+      }
+      
+      .footer-section {
+        background: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar Header -->
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <main class="container pb-5">
+      <div class="small text-muted mb-4">Trang chủ &nbsp;›&nbsp; <strong class="text-dark">Tư vấn cấu hình AI</strong></div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="chat-window">
+            <!-- Header -->
+            <div class="chat-header">
+              <div class="d-flex align-items-center gap-3">
+                <span class="fs-3">🤖</span>
+                <div>
+                  <h5 class="fw-bold m-0" style="font-size:16px;">Trợ lý tư vấn mua sắm AI</h5>
+                  <div class="d-flex align-items-center small text-white-50" style="font-size:12px;">
+                    <span class="status-dot"></span> Đang trực tuyến
+                  </div>
+                </div>
+              </div>
+              <span class="badge bg-primary px-2.5 py-1.5 small">AI Assistant v1.2</span>
+            </div>
+
+            <!-- Message Area -->
+            <div class="chat-history" id="chatHistory">
+              <!-- Initial Welcome Message from AI -->
+              <div class="message message-ai">
+                Xin chào! Mình là Trợ lý ảo thông minh của TECH-PC. 🤖<br/><br/>
+                Hãy cho mình biết nhu cầu của bạn (ví dụ: cần tìm laptop văn phòng, PC chiến game, CPU render đồ họa...) hoặc tầm ngân sách của bạn, mình sẽ tìm sản phẩm phù hợp nhất trong kho hàng cho bạn ạ!
+              </div>
+            </div>
+
+            <!-- Quick Suggestions Chips Area -->
+            <div class="bg-white px-4 py-2 border-top border-bottom d-flex flex-wrap gap-2 align-items-center">
+              <span class="small text-muted fw-semibold me-2">Gợi ý nhanh:</span>
+              <button class="sug-chip" onclick="sendSuggestion('Tìm Laptop dưới 30 triệu')">Tìm Laptop dưới 30 triệu</button>
+              <button class="sug-chip" onclick="sendSuggestion('Cần tư vấn PC chiến game')">PC chiến game</button>
+              <button class="sug-chip" onclick="sendSuggestion('PC Workstation render đồ họa')">PC render đồ họa</button>
+              <button class="sug-chip" onclick="sendSuggestion('Bàn phím cơ & Chuột tốt')">Bàn phím & Chuột tốt</button>
+            </div>
+
+            <!-- Input Area -->
+            <div class="chat-input-area">
+              <input type="text" id="chatInput" class="chat-text-input" placeholder="Nhập câu hỏi của bạn tại đây... (Ví dụ: Tìm laptop dưới 30tr)" onkeydown="checkEnter(event)" />
+              <button class="chat-send-btn" onclick="sendMessage()">Gửi ⚡</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer-section py-4 mt-5">
+      <div class="container text-center text-muted small">© 2026 TECH-PC. Professional Computing Solutions.</div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const chatHistory = document.getElementById('chatHistory');
+      const chatInput = document.getElementById('chatInput');
+      
+      // Check if enter is pressed
+      function checkEnter(event) {
+          if (event.key === 'Enter') {
+              sendMessage();
+          }
+      }
+
+      // Handle sending suggestion chips
+      function sendSuggestion(text) {
+          chatInput.value = text;
+          sendMessage();
+      }
+
+      // Send Message to API
+      function sendMessage() {
+          const text = chatInput.value.trim();
+          if (text === '') return;
+          
+          // Clear Input
+          chatInput.value = '';
+          
+          // Append User Message to Chat History
+          appendMessage(text, 'user');
+          
+          // Show Typing Indicator
+          const indicator = showTypingIndicator();
+          
+          // Scroll Chat window to bottom
+          scrollToBottom();
+          
+          // Call REST API
+          const params = new URLSearchParams();
+          params.append('message', text);
+          
+          // Simulate network delay to make the AI feel real
+          setTimeout(() => {
+              fetch('/api/ai/chat', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: params.toString()
+              })
+              .then(res => res.json())
+              .then(data => {
+                  // Remove Typing Indicator
+                  indicator.remove();
+                  
+                  // Append AI Response
+                  appendAIMessage(data.reply, data.recommendations);
+                  
+                  // Scroll to bottom
+                  scrollToBottom();
+              })
+              .catch(err => {
+                  console.error(err);
+                  indicator.remove();
+                  appendMessage('Có lỗi xảy ra khi kết nối tới trợ lý ảo. Vui lòng thử lại sau!', 'ai');
+                  scrollToBottom();
+              });
+          }, 800);
+      }
+
+      // Append general text message
+      function appendMessage(text, sender) {
+          const div = document.createElement('div');
+          div.className = `message message-${sender}`;
+          div.innerHTML = text.replace(/\n/g, '<br/>');
+          chatHistory.appendChild(div);
+      }
+
+      // Append AI message with optional product recommendations cards
+      function appendAIMessage(replyText, recommendations) {
+          const div = document.createElement('div');
+          div.className = 'message message-ai';
+          
+          let html = replyText.replace(/\n/g, '<br/>');
+          
+          if (recommendations && recommendations.length > 0) {
+              html += `<div class="chat-rec-wrapper">`;
+              recommendations.forEach(p => {
+                  const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(p.price);
+                  html += `
+                      <a href="/product/${p.id}" class="chat-product-card">
+                          <img src="${p.imageUrl}" class="chat-product-img" alt=""/>
+                          <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+                              <div class="fw-bold text-dark text-truncate" style="font-size:14px;">${p.name}</div>
+                              <div class="text-primary fw-bold" style="font-size:13px;">${formattedPrice}</div>
+                              <div class="text-muted small text-truncate" style="font-size:11px;">${p.description}</div>
+                          </div>
+                      </a>
+                  `;
+              });
+              html += `</div>`;
+          }
+          
+          div.innerHTML = html;
+          chatHistory.appendChild(div);
+      }
+
+      // Show pulsing typing indicator
+      function showTypingIndicator() {
+          const div = document.createElement('div');
+          div.className = 'message message-ai typing-indicator-wrapper';
+          div.innerHTML = `
+              <div class="typing-indicator">
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+                  <span class="typing-dot"></span>
+              </div>
+          `;
+          chatHistory.appendChild(div);
+          return div;
+      }
+
+      // Scroll to bottom of chat history
+      function scrollToBottom() {
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+    </script>
+  
+<div th:replace="~{fragments/widget :: widget}"></div>
+
+</body>
+</html>

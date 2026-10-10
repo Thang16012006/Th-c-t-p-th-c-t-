@@ -1,0 +1,68 @@
+<div th:fragment="widget">
+  <style>
+    .floating-contact-widget {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 9999;
+    }
+    .contact-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+    }
+    .contact-btn:hover {
+      transform: translateY(-6px) scale(1.08);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+    }
+    .btn-ai-chat {
+      background: linear-gradient(135deg, #ff7e40 0%, #ff5411 100%);
+    }
+    .btn-whatsapp {
+      background: #4caf50;
+    }
+    .btn-zalo {
+      background: #0084ff;
+    }
+    .contact-btn svg {
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+    }
+    .contact-btn:hover svg {
+      transform: scale(1.1);
+    }
+  </style>
+  <div class="floating-contact-widget">
+    <!-- Orange Chat Button (AI Consultant) -->
+    <a href="/ai-consultant" class="contact-btn btn-ai-chat" title="Trợ lý ảo AI">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+      </svg>
+    </a>
+    <!-- Green WhatsApp Button -->
+    <a href="https://wa.me/84901234567" target="_blank" class="contact-btn btn-whatsapp" title="Chat WhatsApp">
+      <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.762.46 3.42 1.267 4.877L2 22l5.233-1.372a9.948 9.948 0 004.77 1.216c5.52 0 10.004-4.48 10.004-10.004C22.008 6.48 17.524 2 12.004 2zm0 1.836c4.507 0 8.168 3.66 8.168 8.168 0 4.507-3.66 8.168-8.168 8.168a8.12 8.12 0 01-4.164-1.14l-.3-.178-3.097.812.827-3.02-.196-.312A8.136 8.136 0 013.836 12.004c0-4.507 3.66-8.168 8.168-8.168zm-3.523 3.327c-.22 0-.417.067-.582.203-.23.19-.52.548-.52 1.186 0 .753.473 1.547.708 1.854.215.28 2.057 3.25 5.093 4.453.722.286 1.285.457 1.722.593.726.226 1.385.194 1.905.118.58-.086 1.782-.712 2.032-1.403.25-.69.25-1.285.175-1.408-.075-.123-.275-.195-.575-.34-.3-.146-1.782-.88-2.057-.978-.275-.1-.475-.147-.675.147-.2.296-.775.978-.95 1.176-.176.196-.35.22-.65.074-.3-.147-1.267-.467-2.414-1.488-.893-.797-1.496-1.782-1.672-2.08-.175-.3-.02-.46.13-.61.137-.133.3-.347.45-.52.15-.173.2-.293.3-.49.1-.196.05-.37-.025-.52-.075-.146-.675-1.63-.925-2.235-.243-.59-.49-.51-.675-.52-.17-.008-.364-.01-.564-.01z"/>
+      </svg>
+    </a>
+    <!-- Blue Zalo Button -->
+    <a href="https://zalo.me/0901234567" target="_blank" class="contact-btn btn-zalo" title="Chat Zalo">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3c-5.5 0-10 3.58-10 8c0 2.5 1.47 4.75 3.8 6.17l-1.1 3.33c-.15.45.3.85.7.63l4.2-2.33c.77.13 1.57.2 2.4.2 5.5 0 10-3.58 10-8s-4.5-8-10-8z" fill="white"/>
+        <text x="12" y="14.5" fill="#0084ff" font-size="5.8" font-weight="900" font-family="'Outfit', 'Inter', 'Segoe UI', sans-serif" text-anchor="middle" letter-spacing="-0.2px">Zalo</text>
+      </svg>
+    </a>
+  </div>
+</div>
